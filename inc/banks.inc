@@ -6,6 +6,7 @@ BANK_GEOS    = 3
 BANK_BASIC   = 4
 BANK_MONITOR = 5
 BANK_CHARSET = 6
+BANK_ETH     = 7
 
 ; XXX these constant RAM addresses are KERNAL
 ; XXX implementation details and need to go away!
@@ -25,6 +26,7 @@ imparm     = $E2
 ; RAM banks
 ; 0:   KVARS
 ; 1-9: GEOS BG SCREEN (320x200) [not currently enabled]
+; 254: ETH
 ; 255: CBDOS
 
 .ifdef MACHINE_X16
