@@ -1,0 +1,15 @@
+MEMORY {
+	#include "x16.cfginc"
+
+	ETH:       start = $C000, size = $3B00, fill=yes, fillval=$AA;
+	KSUP_CODE: start = $FB00, size = $0300, fill=yes, fillval=$AA;
+	KSUP_VEC:  start = $FEC0, size = $0140, fill=yes, fillval=$AA;
+}
+
+SEGMENTS {
+	ZPETH:      load = ZPETH,    type = zp;
+	eth:        load = ETH,      type = ro;
+	eth_data:   load = ETHDAT,   type = bss;
+	KSUP_CODE:  load = KSUP_CODE, type = ro;
+	KSUP_VEC:   load = KSUP_VEC,  type = ro;
+}
