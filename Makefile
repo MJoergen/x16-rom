@@ -29,6 +29,8 @@ ASFLAGS     += -D CPU_65C02=1
 ASFLAGS     +=  $(VERSION_DEFINE)
 # put all symbols into .sym files
 ASFLAGS     += -g
+# For Etheret support
+ASFLAGS     += -D ETH=1
 
 ifeq ($(MACHINE),x16)
 ASFLAGS     += -D MACHINE_X16=1
@@ -266,6 +268,16 @@ CHARSET_SOURCES= \
 	charset/petscii.s \
 	charset/iso-8859-15.s
 
+ETH_SOURCES= \
+	kernsup/kernsup_basic.s \
+	eth/zeropage.s \
+	eth/main.s \
+	eth/ethernet.s \
+	eth/eth_arp.s \
+	eth/eth_ip.s \
+	eth/eth_udp.s \
+	eth/tftp.s
+
 GENERIC_DEPS = \
 	inc/kernal.inc \
 	inc/mac.inc \
@@ -320,6 +332,9 @@ MONITOR_DEPS= \
 CHARSET_DEPS= \
 	$(GENERIC_DEPS)
 
+ETH_DEPS= \
+	$(GENERIC_DEPS)
+
 KERNAL_OBJS  = $(addprefix $(BUILD_DIR)/, $(KERNAL_SOURCES:.s=.o))
 KEYMAP_OBJS  = $(addprefix $(BUILD_DIR)/, $(KEYMAP_SOURCES:.s=.o))
 CBDOS_OBJS   = $(addprefix $(BUILD_DIR)/, $(CBDOS_SOURCES:.s=.o))
@@ -327,6 +342,7 @@ GEOS_OBJS    = $(addprefix $(BUILD_DIR)/, $(GEOS_SOURCES:.s=.o))
 BASIC_OBJS   = $(addprefix $(BUILD_DIR)/, $(BASIC_SOURCES:.s=.o))
 MONITOR_OBJS = $(addprefix $(BUILD_DIR)/, $(MONITOR_SOURCES:.s=.o))
 CHARSET_OBJS = $(addprefix $(BUILD_DIR)/, $(CHARSET_SOURCES:.s=.o))
+ETH_OBJS     = $(addprefix $(BUILD_DIR)/, $(ETH_SOURCES:.s=.o))
 
 ifeq ($(MACHINE),c64)
 	BANK_BINS = $(BUILD_DIR)/kernal.bin
@@ -338,7 +354,8 @@ else
 		$(BUILD_DIR)/geos.bin \
 		$(BUILD_DIR)/basic.bin \
 		$(BUILD_DIR)/monitor.bin \
-		$(BUILD_DIR)/charset.bin
+		$(BUILD_DIR)/charset.bin \
+		$(BUILD_DIR)/eth.bin
 endif
 
 ifeq ($(MACHINE),x16)
@@ -400,6 +417,11 @@ $(BUILD_DIR)/charset.bin: $(CHARSET_OBJS) $(CHARSET_DEPS) $(CFG_DIR)/charset-$(M
 	@mkdir -p $$(dirname $@)
 	$(LD) -C $(CFG_DIR)/charset-$(MACHINE).cfg $(CHARSET_OBJS) -o $@ -m $(BUILD_DIR)/charset.map -Ln $(BUILD_DIR)/charset.sym
 
+# Bank 7 : ETH
+$(BUILD_DIR)/eth.bin: $(ETH_OBJS) $(ETH_DEPS) $(CFG_DIR)/eth-$(MACHINE).cfg
+	@mkdir -p $$(dirname $@)
+	$(LD) -C $(CFG_DIR)/eth-$(MACHINE).cfg $(ETH_OBJS) -o $@ -m $(BUILD_DIR)/eth.map -Ln $(BUILD_DIR)/eth.sym
+
 $(BUILD_DIR)/rom_labels.h: $(BANK_BINS)
 	./scripts/symbolize.sh 0 build/x16/kernal.sym   > $@
 	./scripts/symbolize.sh 1 build/x16/keymap.sym  >> $@
@@ -408,3 +430,4 @@ $(BUILD_DIR)/rom_labels.h: $(BANK_BINS)
 	./scripts/symbolize.sh 4 build/x16/basic.sym   >> $@
 	./scripts/symbolize.sh 5 build/x16/monitor.sym >> $@
 	./scripts/symbolize.sh 6 build/x16/charset.sym >> $@
+	./scripts/symbolize.sh 7 build/x16/eth.sym     >> $@
