@@ -44,6 +44,12 @@ cbdos_enabled:
 secnd:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 0
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_secnd
 :	jsr jsrfar
 	.word $c000 + 3 * 0
@@ -53,6 +59,12 @@ secnd:
 tksa:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 1
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_tksa
 :	jsr jsrfar
 	.word $c000 + 3 * 1
@@ -62,6 +74,12 @@ tksa:
 acptr:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 2
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_acptr
 :	jsr jsrfar
 	.word $c000 + 3 * 2
@@ -71,6 +89,12 @@ acptr:
 ciout:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 3
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_ciout
 :	jsr jsrfar
 	.word $c000 + 3 * 3
@@ -80,6 +104,12 @@ ciout:
 untlk:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 4
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_untlk
 :	jsr jsrfar
 	.word $c000 + 3 * 4
@@ -89,6 +119,12 @@ untlk:
 unlsn:
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 5
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_unlsn
 :	jsr jsrfar
 	.word $c000 + 3 * 5
@@ -99,6 +135,12 @@ listn:
 	jsr cbdos_detect
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 6
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_listn
 :	jsr jsrfar
 	.word $c000 + 3 * 6
@@ -109,6 +151,12 @@ talk:
 	jsr cbdos_detect
 	bit cbdos_enabled
 	bmi :+
+.ifdef ETH
+   jsr jsrfar
+   .word $c000 + 3 * 7
+   .byte BANK_ETH
+   rts
+.endif
 	jmp serial_talk
 :	jsr jsrfar
 	.word $c000 + 3 * 7
